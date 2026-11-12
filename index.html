@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tuyến buýt so sánh – Lớp 6 Unit 4: Comparative adjectives</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF2F8; --surface:#FFFFFF; --surface2:#F2F6FB; --ink:#172033; --muted:#5A667D; --line:#CCD7E6;
+  --route:#E0353F; --bus:#FFC531; --bus-ink:#3F2E00; --blue:#2F66DB; --blue-deep:#1C479E;
+  --good:#1E8A51; --good-bg:#DDF4E6; --bad:#D2343D; --bad-bg:#FDE3E4;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1625; --surface:#182238; --surface2:#1E2B46; --ink:#EAF0FA; --muted:#A3B0C8; --line:#2E3D5C;
+    --route:#FF6B73; --blue:#7DA5F5; --blue-deep:#4B74C8;
+    --good:#58CC8D; --good-bg:#153E2B; --bad:#FF737A; --bad-bg:#4A1C21;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1625; --surface:#182238; --surface2:#1E2B46; --ink:#EAF0FA; --muted:#A3B0C8; --line:#2E3D5C;
+  --route:#FF6B73; --blue:#7DA5F5; --blue-deep:#4B74C8;
+  --good:#58CC8D; --good-bg:#153E2B; --bad:#FF737A; --bad-bg:#4A1C21;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Baloo 2",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:18px;line-height:1.45;min-height:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--bus);outline-offset:2px}
+.wrap{max-width:780px;margin:0 auto;padding:14px 18px 56px}
+.hidden{display:none!important}
+
+.top{display:flex;align-items:center;gap:8px}
+.brand{font-weight:800;color:var(--blue);margin-right:auto;line-height:1.15}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);font-size:19px;cursor:pointer;display:grid;place-items:center;padding:0;flex:none}
+
+/* hero with balance scale */
+h1{font-size:clamp(44px,10vw,72px);font-weight:800;line-height:.95;margin:16px 0 2px;letter-spacing:-0.01em}
+.sub{margin:0;color:var(--muted);font-weight:600}
+.scalebox{margin-top:14px;background:var(--surface);border:3px solid var(--ink);border-radius:24px;padding:10px 12px 14px;text-align:center}
+.scale{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.scale .beam{transform-origin:200px 70px;transition:transform .9s cubic-bezier(.5,1.6,.5,1)}
+.scale .pan{transition:transform .9s cubic-bezier(.5,1.6,.5,1)}
+.scalecap{font-size:clamp(20px,4.6vw,26px);font-weight:800;min-height:1.5em}
+.scalecap .c{color:var(--route)}
+.scalebtns{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:18px;margin-top:18px}
+.panel h2{font-size:25px;line-height:1.2;margin:0 0 10px}
+.fields{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+.fields label{display:flex;flex-direction:column;gap:2px;font-size:16px;color:var(--muted);font-weight:600}
+.fields input{font:inherit;font-size:19px;color:var(--ink);background:var(--surface2);border:2px solid var(--line);border-radius:14px;padding:8px 12px;min-width:0}
+.fields input:focus{border-color:var(--blue);outline:none}
+.warn{color:var(--bad);font-weight:700;font-size:16px;margin:8px 0 0}
+
+/* bus route */
+.rhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.rhead h2{margin:0;display:flex;align-items:center;gap:10px}
+.busno{background:var(--route);color:#fff;border-radius:10px;padding:0 10px;font-size:22px}
+.linkbtn{background:none;border:0;color:var(--blue);font-weight:700;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px}
+.route{position:relative;margin-top:14px;padding-left:0}
+.route::before{content:"";position:absolute;left:31px;top:24px;bottom:24px;width:8px;border-radius:4px;background:var(--route)}
+.stop{position:relative;display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:10px;width:100%;border:0;background:none;padding:8px 0;cursor:pointer;text-align:left}
+.stop .dot{justify-self:center;width:54px;height:54px;border-radius:50%;background:var(--surface);border:6px solid var(--route);display:grid;place-items:center;font-size:24px;z-index:1}
+.stop.done .dot{background:var(--bus);border-color:var(--route)}
+.stop.rest .dot{border-style:dashed}
+.stop .card2{background:var(--surface2);border:2px solid var(--line);border-radius:16px;padding:8px 12px;transition:transform .1s}
+.stop:hover .card2{transform:translateX(3px);border-color:var(--blue)}
+.stop .nm{font-size:14px;color:var(--muted);font-weight:700;line-height:1.1}
+.stop b{display:block;font-size:20px;line-height:1.2}
+.stop small{display:block;color:var(--muted);font-size:15px;line-height:1.25}
+.stop .res{font-weight:800;color:var(--route);font-size:20px;white-space:nowrap;min-width:3.4em;text-align:right}
+.stop .res.empty{color:var(--muted);font-size:14px;font-weight:600}
+
+.btn{font-weight:800;font-size:19px;padding:11px 24px;border-radius:16px;border:0;background:var(--blue);color:#fff;cursor:pointer;box-shadow:0 4px 0 var(--blue-deep);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--blue-deep)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.bus{background:var(--bus);color:var(--bus-ink);box-shadow:0 4px 0 #C9951B}
+.smallbtn{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 14px;font-weight:700;cursor:pointer}
+
+/* theory */
+.rules{display:grid;gap:12px}
+.rule{border:2px solid var(--line);border-left:8px solid var(--route);border-radius:14px;padding:12px 14px;background:var(--surface2)}
+.rule h3{margin:0 0 4px;font-size:20px}
+.rule p{margin:4px 0}
+.rule .f{font-size:21px;font-weight:800;color:var(--blue)}
+.rtable{width:100%;border-collapse:collapse;font-size:17px;margin-top:6px}
+.rtable td{padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.rtable td:first-child{font-weight:700;width:46%}
+
+/* quiz */
+.hud{display:flex;align-items:center;gap:12px;margin:14px 0 10px;font-weight:700}
+.tag{background:var(--route);color:#fff;padding:2px 12px;border-radius:999px;font-size:16px;white-space:nowrap}
+.pbar{flex:1;height:14px;border-radius:99px;background:var(--surface);overflow:hidden;border:2px solid var(--line);position:relative}
+.pbar i{display:block;height:100%;width:0;background:var(--bus);transition:width .3s}
+.combo{color:#E07B12;min-width:3.2em;text-align:right}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:24px;padding:20px;text-align:center}
+.qlabel{color:var(--muted);font-weight:600;margin:0 0 10px}
+.adj{font-size:clamp(46px,11vw,66px);font-weight:800;line-height:1.05;margin:4px 0}
+.vi{color:var(--muted);font-weight:600}
+.sent{font-size:clamp(22px,5.2vw,29px);font-weight:700;line-height:1.5;margin:6px 0}
+.sent .blank{display:inline-block;min-width:3.8em;border-bottom:3px solid var(--blue);color:var(--blue);text-align:center}
+.sent .hint{color:var(--muted);font-weight:600}
+.opts{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
+.opt{min-width:130px;font-size:22px;font-weight:800;padding:10px 18px;border-radius:16px;border:3px solid var(--line);background:var(--surface);cursor:pointer;box-shadow:0 4px 0 var(--line)}
+.opts.col{flex-direction:column;align-items:stretch}
+.opts.col .opt{text-align:left;font-size:19px;font-weight:700}
+.opt.good{background:var(--good-bg);border-color:var(--good);box-shadow:0 4px 0 var(--good);animation:pop .3s ease}
+.opt.bad{background:var(--bad-bg);border-color:var(--bad);box-shadow:0 4px 0 var(--bad);animation:shake .35s ease}
+.opt:disabled{cursor:default}
+.opt .big{display:block;font-size:30px;line-height:1.1}
+.opt small{display:block;font-size:15px;color:var(--muted);font-weight:600}
+@keyframes pop{50%{transform:scale(1.05)}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.typein{font:inherit;font-weight:800;font-size:inherit;color:var(--blue);background:var(--surface2);border:0;border-bottom:3px solid var(--blue);border-radius:8px 8px 0 0;width:7.5em;max-width:100%;text-align:center;padding:0 6px}
+.typein:focus{outline:none;background:var(--surface)}
+.typein.good{color:var(--good);border-bottom-color:var(--good);background:var(--good-bg)}
+.typein.bad{color:var(--bad);border-bottom-color:var(--bad);background:var(--bad-bg)}
+.places{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 6px}
+.place{border:2px solid var(--line);border-radius:16px;padding:10px;background:var(--surface2);text-align:left}
+.place h3{margin:0 0 4px;font-size:20px;display:flex;gap:6px;align-items:center}
+.place .stat{display:block;font-size:17px;border-top:1px dashed var(--line);padding-top:3px;margin-top:3px;line-height:1.25}
+.place .stat span:first-child{display:block;font-size:13px;color:var(--muted);font-weight:600}
+.place .stat span:last-child{font-weight:700}
+.place .stat.hl{font-weight:800;color:var(--blue)}
+.tokens{font-size:clamp(22px,5vw,28px);font-weight:700;line-height:1.9;margin:8px 0}
+.tok{border:0;background:none;border-bottom:3px dotted var(--line);padding:0 3px;margin:0 2px;font-weight:700;cursor:pointer;border-radius:6px}
+.tok:hover{background:var(--surface2)}
+.tok.bad{background:var(--bad-bg);color:var(--bad);border-bottom-color:var(--bad);text-decoration:line-through}
+.tok.err{background:var(--bus);color:var(--bus-ink);border-bottom-color:var(--route)}
+.tok:disabled{cursor:default}
+.build{min-height:60px;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:10px;border:2px dashed var(--line);border-radius:16px;margin:10px 0}
+.build.good{border-style:solid;border-color:var(--good);background:var(--good-bg)}
+.build.bad{border-style:solid;border-color:var(--bad);background:var(--bad-bg)}
+.pool{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.chunk{font-weight:700;font-size:20px;padding:6px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);cursor:pointer;box-shadow:0 3px 0 var(--line)}
+.chunk.used{visibility:hidden}
+.build .chunk{background:var(--surface2)}
+.feedback{margin-top:14px;font-weight:800;font-size:21px;min-height:1.4em}
+.feedback.good{color:var(--good)} .feedback.bad{color:var(--bad)}
+.why{margin-top:6px;padding:10px 14px;border-radius:14px;background:var(--surface2);line-height:1.45;text-align:left}
+.why .ans{font-weight:800}
+.nextrow{display:flex;justify-content:center;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+/* quick fire scale */
+.qf{background:var(--surface);border:3px solid var(--ink);border-radius:24px;padding:16px;text-align:center;position:relative;overflow:hidden;min-height:470px}
+.qf .timer{height:12px;border-radius:99px;background:var(--surface2);overflow:hidden;border:1px solid var(--line)}
+.qf .timer i{display:block;height:100%;background:var(--route);width:100%}
+.qf .row2{display:flex;justify-content:space-between;font-weight:800;margin:8px 0 0;font-size:20px}
+.qf .q{font-size:clamp(23px,5.4vw,30px);font-weight:800;line-height:1.35;margin:4px 0 12px;min-height:2.7em}
+.qf .q .bl{color:var(--route)}
+.qf .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.qf .ch{font-size:26px;font-weight:800;padding:12px;border-radius:16px;border:3px solid var(--line);background:var(--surface2);cursor:pointer;box-shadow:0 4px 0 var(--line)}
+.qf .ch.good{background:var(--good-bg);border-color:var(--good)}
+.qf .ch.bad{background:var(--bad-bg);border-color:var(--bad)}
+.qf .start{position:absolute;inset:0;background:rgba(15,22,37,.8);display:grid;place-items:center;padding:16px;color:#fff}
+.qf .start .box{max-width:400px;background:var(--surface);color:var(--ink);border-radius:20px;padding:20px}
+.qf .start p{margin:6px 0 14px}
+
+/* end */
+.center{text-align:center}
+.stars{font-size:50px;letter-spacing:6px;line-height:1.2;color:var(--bus);text-shadow:0 2px 0 #C9951B}
+.bigscore{font-size:86px;font-weight:800;line-height:1;color:var(--route)}
+.bigscore small{font-size:30px;color:var(--muted)}
+.endmsg{font-size:21px;font-weight:700;margin:8px 0 4px}
+.endstats{color:var(--muted)}
+.sendst{margin-top:10px;font-weight:700;font-size:16px;color:var(--muted)}
+.mlist{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px;text-align:left}
+.mlist li{background:var(--surface2);border-radius:14px;padding:8px 12px;line-height:1.35}
+.mlist .y{color:var(--bad);text-decoration:line-through}
+.mlist .r{color:var(--good);font-weight:800}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:40}
+
+dialog{border:2px solid var(--line);border-radius:20px;background:var(--surface);color:var(--ink);padding:20px;width:min(460px,92vw)}
+dialog::backdrop{background:rgba(10,15,30,.55)}
+dialog h2{margin:0 0 8px}
+dialog label{display:block;font-weight:700;font-size:16px;margin:12px 0 4px}
+dialog select{width:100%;font:inherit;font-size:16px;padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--surface2);color:var(--ink)}
+dialog input[type=range]{width:100%}
+dialog p{color:var(--muted);font-size:15px;margin:10px 0 0}
+.drow{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+
+@media (max-width:560px){
+  .fields{grid-template-columns:1fr}
+  .stop{grid-template-columns:62px 1fr auto}
+  .route::before{left:27px}
+  .stop .dot{width:48px;height:48px;font-size:21px}
+  .stop b{font-size:18px}
+  .opt{min-width:100px;font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <header class="top">
+    <span class="brand">Tiếng Anh Cô Ánh</span>
+    <button class="iconbtn" id="setBtn" aria-label="Chọn giọng đọc" title="Chọn giọng đọc">⚙️</button>
+    <button class="iconbtn" id="sndBtn" aria-label="Bật/tắt âm thanh" title="Bật/tắt âm thanh">🔊</button>
+    <button class="iconbtn" id="homeBtn" aria-label="Về trang chính" title="Về trang chính">🏠</button>
+  </header>
+
+  <!-- HOME -->
+  <section id="home">
+    <h1>So sánh hơn</h1>
+    <p class="sub">Comparative adjectives – Unit 4: My Neighbourhood – Tiếng Anh 6 Global Success</p>
+    <div class="scalebox">
+      <svg class="scale" viewBox="0 0 400 210" aria-hidden="true">
+        <rect x="170" y="190" width="60" height="12" rx="6" fill="var(--ink)"/>
+        <rect x="195" y="70" width="10" height="122" fill="var(--ink)"/>
+        <g class="beam" id="beam">
+          <rect x="50" y="64" width="300" height="12" rx="6" fill="var(--route)"/>
+          <g class="pan" id="panL"><line x1="70" y1="76" x2="50" y2="130" stroke="var(--ink)" stroke-width="3"/><line x1="70" y1="76" x2="90" y2="130" stroke="var(--ink)" stroke-width="3"/>
+            <path d="M30 130 h80 a40 16 0 0 1 -80 0z" fill="var(--bus)" stroke="var(--ink)" stroke-width="3"/><text x="70" y="124" font-size="44" text-anchor="middle" id="emL">🏙️</text></g>
+          <g class="pan" id="panR"><line x1="330" y1="76" x2="310" y2="130" stroke="var(--ink)" stroke-width="3"/><line x1="330" y1="76" x2="350" y2="130" stroke="var(--ink)" stroke-width="3"/>
+            <path d="M290 130 h80 a40 16 0 0 1 -80 0z" fill="var(--bus)" stroke="var(--ink)" stroke-width="3"/><text x="330" y="124" font-size="44" text-anchor="middle" id="emR">🏡</text></g>
+        </g>
+        <circle cx="200" cy="70" r="10" fill="var(--bus)" stroke="var(--ink)" stroke-width="3"/>
+      </svg>
+      <div class="scalecap" id="scap" aria-live="polite"></div>
+      <div class="scalebtns"><button class="smallbtn" id="scNext">⚖️ Cân tiếp</button><button class="smallbtn" id="scSay">🔊 Nghe câu</button></div>
+    </div>
+
+    <div class="panel">
+      <h2>Hành khách</h2>
+      <div class="fields">
+        <label>Họ và tên<input id="nameIn" autocomplete="name" placeholder="Ví dụ: Võ Minh Khang"></label>
+        <label>Lớp<input id="classIn" placeholder="6A1"></label>
+      </div>
+      <p class="warn hidden" id="nameWarn">Em nhập họ tên để làm bài kiểm tra và gửi điểm cho cô nhé.</p>
+    </div>
+
+    <div class="panel">
+      <div class="rhead"><h2><span class="busno">04</span> Tuyến buýt so sánh</h2><button class="linkbtn" id="theoryBtn">📋 Xem lại lí thuyết</button></div>
+      <div class="route" id="route"></div>
+    </div>
+  </section>
+
+  <!-- THEORY -->
+  <section id="theory" class="hidden">
+    <div class="panel">
+      <h2>Ghi nhớ: so sánh hơn</h2>
+      <div class="rules">
+        <div class="rule"><h3>1. Tính từ ngắn (1 âm tiết)</h3>
+          <p class="f">S + be + adj-er + than + …</p>
+          <p>My street is <b>longer than</b> your street.</p></div>
+        <div class="rule"><h3>2. Tính từ dài (2 âm tiết trở lên)</h3>
+          <p class="f">S + be + more + adj + than + …</p>
+          <p>The city is <b>more crowded than</b> the countryside.</p></div>
+        <div class="rule"><h3>3. Cách thêm -er</h3>
+          <table class="rtable">
+            <tr><td>Thường: thêm -er</td><td>old → older, cheap → cheaper</td></tr>
+            <tr><td>Tận cùng e: thêm -r</td><td>large → larger, nice → nicer</td></tr>
+            <tr><td>1 nguyên âm + 1 phụ âm: gấp đôi phụ âm</td><td>big → bigger, hot → hotter</td></tr>
+            <tr><td>Tận cùng y: đổi thành -ier</td><td>noisy → noisier, busy → busier</td></tr>
+            <tr><td>Đặc biệt</td><td>good → better, bad → worse, far → farther / further</td></tr>
+            <tr><td>Hay dùng -er dù có 2 âm tiết</td><td>quiet → quieter, narrow → narrower</td></tr>
+          </table></div>
+        <div class="rule"><h3>4. Lỗi hay gặp</h3>
+          <p>✗ more bigger → ✓ bigger &nbsp; ✗ beautifuler → ✓ more beautiful</p>
+          <p>✗ bigger then → ✓ bigger <b>than</b></p></div>
+      </div>
+    </div>
+    <div class="nextrow"><button class="btn" id="theoryDone">Lên xe thôi!</button></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="hud"><span class="tag" id="qtag">Trạm 1</span><div class="pbar"><i id="qbar"></i></div><span class="combo" id="combo"></span></div>
+    <div class="card" id="card"></div>
+  </section>
+
+  <!-- QUICK FIRE -->
+  <section id="qfire" class="hidden">
+    <div class="qf">
+      <div class="timer"><i id="qfTimer"></i></div>
+      <div class="row2"><span id="qfScore">0 câu đúng</span><span id="qfTime">60 giây</span></div>
+      <svg class="scale" viewBox="0 0 400 170" aria-hidden="true" style="max-width:360px">
+        <rect x="185" y="62" width="30" height="100" rx="6" fill="var(--ink)"/>
+        <g class="beam" id="qbeam" style="transform-origin:200px 60px">
+          <rect x="50" y="54" width="300" height="12" rx="6" fill="var(--route)"/>
+          <g class="pan"><line x1="70" y1="66" x2="50" y2="112" stroke="var(--ink)" stroke-width="3"/><line x1="70" y1="66" x2="90" y2="112" stroke="var(--ink)" stroke-width="3"/>
+            <path d="M30 112 h80 a40 14 0 0 1 -80 0z" fill="var(--bus)" stroke="var(--ink)" stroke-width="3"/><text x="70" y="106" font-size="40" text-anchor="middle" id="qemL">🐘</text></g>
+          <g class="pan"><line x1="330" y1="66" x2="310" y2="112" stroke="var(--ink)" stroke-width="3"/><line x1="330" y1="66" x2="350" y2="112" stroke="var(--ink)" stroke-width="3"/>
+            <path d="M290 112 h80 a40 14 0 0 1 -80 0z" fill="var(--bus)" stroke="var(--ink)" stroke-width="3"/><text x="330" y="106" font-size="40" text-anchor="middle" id="qemR">🐭</text></g>
+        </g>
+        <circle cx="200" cy="60" r="9" fill="var(--bus)" stroke="var(--ink)" stroke-width="3"/>
+      </svg>
+      <div class="q" id="qfQ"></div>
+      <div class="two" id="qfOpts"></div>
+      <div class="start" id="qfStart"><div class="box" id="qfBox"></div></div>
+    </div>
+  </section>
+
+  <!-- END -->
+  <section id="end" class="hidden"><div class="panel center" id="endCard"></div></section>
+</div>
+
+<dialog id="setDlg">
+  <h2>Giọng đọc</h2>
+  <label for="voiceSel">Giọng tiếng Anh</label>
+  <select id="voiceSel"></select>
+  <label for="rateIn">Tốc độ đọc</label>
+  <input type="range" id="rateIn" min="0.6" max="1.1" step="0.05">
+  <p id="voiceNote"></p>
+  <div class="drow">
+    <button class="btn ghost" id="testVoice">Nghe thử</button>
+    <button class="btn" id="closeDlg">Xong</button>
+  </div>
+</dialog>
+
+<script>
+"use strict";
+/* ================= DATA ================= */
+// [adjective, comparative(s), rule, meaning]
+const ADJ = [
+  ["old","older","er","cũ, già"],["new","newer","er","mới"],["tall","taller","er","cao"],["long","longer","er","dài"],["short","shorter","er","ngắn, thấp"],
+  ["fast","faster","er","nhanh"],["slow","slower","er","chậm"],["cheap","cheaper","er","rẻ"],["clean","cleaner","er","sạch"],["cold","colder","er","lạnh"],
+  ["warm","warmer","er","ấm"],["high","higher","er","cao"],["young","younger","er","trẻ"],["small","smaller","er","nhỏ"],["strong","stronger","er","khoẻ"],["green","greener","er","xanh, nhiều cây xanh"],
+  ["quiet","quieter","er2","yên tĩnh"],["narrow","narrower","er2","hẹp"],
+  ["large","larger","r","rộng, lớn"],["nice","nicer","r","đẹp, dễ chịu"],["safe","safer","r","an toàn"],["wide","wider","r","rộng"],
+  ["big","bigger","dbl","to, lớn"],["hot","hotter","dbl","nóng"],["wet","wetter","dbl","ẩm ướt"],["thin","thinner","dbl","mỏng, gầy"],["sad","sadder","dbl","buồn"],
+  ["busy","busier","ier","bận rộn, đông đúc"],["noisy","noisier","ier","ồn ào"],["easy","easier","ier","dễ"],["dirty","dirtier","ier","bẩn"],["happy","happier","ier","vui"],
+  ["pretty","prettier","ier","xinh"],["heavy","heavier","ier","nặng"],["funny","funnier","ier","buồn cười"],
+  ["good","better","irr","tốt"],["bad","worse","irr","tệ"],["far","farther|further","irr","xa"],
+  ["crowded","more crowded","more","đông đúc"],["modern","more modern","more","hiện đại"],["historic","more historic","more","cổ kính, có tính lịch sử"],
+  ["peaceful","more peaceful","more","yên bình"],["convenient","more convenient","more","tiện lợi"],["inconvenient","more inconvenient","more","bất tiện"],
+  ["exciting","more exciting","more","thú vị, sôi động"],["boring","more boring","more","buồn tẻ"],["expensive","more expensive","more","đắt"],
+  ["beautiful","more beautiful","more","đẹp"],["interesting","more interesting","more","thú vị"],["polluted","more polluted","more","ô nhiễm"],
+  ["comfortable","more comfortable","more","thoải mái"],["famous","more famous","more","nổi tiếng"],["dangerous","more dangerous","more","nguy hiểm"],
+  ["popular","more popular","more","phổ biến"],["delicious","more delicious","more","ngon"]
+].map(([a, c, r, vi]) => ({a, cs: c.split("|"), c: c.split("|")[0], r, vi}));
+const A = Object.fromEntries(ADJ.map(x => [x.a, x]));
+const SENTS = [
+  ["A city is", "noisy", "than a village."], ["An elephant is", "big", "than a dog."], ["My new school is", "modern", "than my old school."],
+  ["Life in the countryside is", "peaceful", "than life in the city."], ["The streets in the city centre are", "crowded", "than the streets in my village."],
+  ["A plane is", "fast", "than a train."], ["Vegetables at the market are", "cheap", "than vegetables at the supermarket."], ["This park is", "clean", "than that park."],
+  ["Summer is", "hot", "than winter."], ["Maths is", "easy", "than English for me."], ["A sofa is", "comfortable", "than a wooden chair."],
+  ["My street is", "narrow", "than your street."], ["The museum is", "interesting", "than the shopping centre."], ["Living near school is", "convenient", "than living far from it."],
+  ["The weather today is", "bad", "than yesterday."], ["Your idea is", "good", "than my idea."], ["The suburbs are", "quiet", "than the city centre."],
+  ["A house in the city is", "expensive", "than a house in the countryside."], ["The library is", "far", "from my house than the park."], ["My little sister is", "young", "than me."],
+  ["Ha Noi is", "large", "than my hometown."], ["This road is", "dangerous", "than that road at night."], ["The air in big cities is", "polluted", "than the air in villages."],
+  ["My neighbourhood is", "busy", "at weekends than on weekdays."], ["Hoi An is", "historic", "than many new towns."], ["A giraffe is", "tall", "than a horse."],
+  ["This bag is", "heavy", "than that one."], ["Our new classroom is", "wide", "than the old one."], ["Football is", "popular", "than chess in my class."]
+];
+const ERRORS = [
+  {t:["My","house","is","biger","than","your","house."], e:3, fix:"bigger", why:"big có 1 nguyên âm + 1 phụ âm → gấp đôi g: bigger."},
+  {t:["The","city","is","more","noisier","than","the","village."], e:3, fix:"(bỏ more) noisier", full:"The city is noisier than the village.", why:"noisier đã là so sánh hơn, không dùng thêm more."},
+  {t:["Ha","Noi","is","larger","then","Hue."], e:4, fix:"than", why:"So sánh hơn dùng than, không phải then."},
+  {t:["This","park","is","beautifuler","than","that","park."], e:3, fix:"more beautiful", why:"beautiful là tính từ dài → more beautiful."},
+  {t:["Today","is","hoter","than","yesterday."], e:2, fix:"hotter", why:"hot → gấp đôi t: hotter."},
+  {t:["My","street","is","narrow","than","yours."], e:3, fix:"narrower", why:"Có than thì tính từ phải ở dạng so sánh hơn: narrower."},
+  {t:["The","museum","is","more","interesting","as","the","zoo."], e:5, fix:"than", why:"So sánh hơn: more interesting than."},
+  {t:["Your","bike","is","gooder","than","mine."], e:3, fix:"better", why:"good là tính từ đặc biệt: good → better."},
+  {t:["Summer","is","more","hotter","than","spring."], e:2, fix:"(bỏ more) hotter", full:"Summer is hotter than spring.", why:"hotter đã là so sánh hơn, không dùng thêm more."},
+  {t:["A","village","is","peacefuler","than","a","city."], e:3, fix:"more peaceful", why:"peaceful có 2 âm tiết → more peaceful."},
+  {t:["Is","your","town","busyer","than","mine?"], e:3, fix:"busier", why:"busy tận cùng y → busier."},
+  {t:["The","weather","today","is","badder","than","yesterday."], e:4, fix:"worse", why:"bad là tính từ đặc biệt: bad → worse."},
+  {t:["My","new","school","is","more","modern","that","my","old","school."], e:6, fix:"than", why:"So sánh hơn dùng than, không phải that."},
+  {t:["This","sofa","is","comfortabler","than","that","chair."], e:3, fix:"more comfortable", why:"comfortable là tính từ dài → more comfortable."}
+];
+const ORDERS = [
+  ["My neighbourhood", "is", "quieter", "than", "yours."], ["Is", "your street", "wider", "than", "my street?"],
+  ["The countryside", "is", "more peaceful", "than", "the city."], ["A bike", "is", "cheaper", "than", "a motorbike."],
+  ["Hoi An", "is", "more historic", "than", "my town."], ["Our school library", "is", "bigger", "than", "the old one."],
+  ["Is", "the city centre", "more crowded", "than", "the suburbs?"], ["The food here", "is", "better", "than", "at home."]
+];
+const PLACES = [["Hoa Street", "🏙️"], ["Sen Village", "🏡"], ["Binh An", "🏘️"], ["Hong Ha Town", "🏬"]];
+const ATTRS = [
+  {k:"cars", label:"Xe cộ mỗi ngày", fmt:v => v.toLocaleString("vi-VN") + " xe", gen:() => [rand(2, 8) * 1000, rand(1, 5) * 100], hi:"noisy", lo:"quiet"},
+  {k:"price", label:"Giá một căn nhà", fmt:v => v + " tỉ đồng", gen:() => [rand(6, 12), rand(1, 4)], hi:"expensive", lo:"cheap"},
+  {k:"year", label:"Xây dựng từ năm", fmt:v => String(v), gen:() => [rand(1500, 1800), rand(1990, 2015)], hi:"old", lo:"modern", invert:true},
+  {k:"dist", label:"Cách trường", fmt:v => v + " km", gen:() => [rand(6, 12), rand(1, 3)], hi:"far", lo:null, from:true},
+  {k:"people", label:"Dân số", fmt:v => v.toLocaleString("vi-VN") + " người", gen:() => [rand(30, 90) * 1000, rand(2, 9) * 1000], hi:"crowded", lo:"peaceful"},
+  {k:"parks", label:"Số công viên", fmt:v => v + " công viên", gen:() => [rand(5, 9), rand(0, 2)], hi:"green", lo:null}
+];
+const SCALES = [
+  ["🐘","🐭","An elephant","a mouse","heavy"],["✈️","🚲","A plane","a bike","fast"],["🏙️","🏡","A city","a village","noisy"],
+  ["🦒","🐈","A giraffe","a cat","tall"],["☀️","❄️","Summer","winter","hot"],["🚗","🛵","A car","a motorbike","expensive"],
+  ["📱","☎️","A smartphone","an old phone","modern"],["🏯","🏢","An old temple","a new building","historic"],["🛋️","🪑","A sofa","a wooden chair","comfortable"],
+  ["🐇","🐢","A rabbit","a tortoise","fast"],["🏞️","🏭","A park","a factory","peaceful"],["🍉","🍒","A watermelon","a cherry","big"],
+  ["🏰","🏠","A castle","a small house","large"],["🦁","🐑","A lion","a sheep","dangerous"],["🍕","🥦","Pizza","broccoli","popular"],
+  ["🚂","🐌","A train","a snail","fast"],["🌋","⛰️","A volcano","a small hill","high"],["🎢","📚","A theme park","a library","exciting"]
+];
+const LEVELS = [
+  {id:"l1", ic:"🏪", nm:"Trạm 1: Chợ", t:"Ngắn hay dài?", d:"Thêm -er hay dùng more?"},
+  {id:"l2", ic:"🏫", nm:"Trạm 2: Trường học", t:"Viết đúng dạng so sánh", d:"bigger, larger, noisier, better…"},
+  {id:"l3", ic:"🌳", nm:"Trạm 3: Công viên", t:"Hoàn thành câu", d:"Chọn rồi tự gõ dạng so sánh hơn"},
+  {id:"qf", ic:"⚖️", nm:"Trạm nghỉ", t:"Cân so sánh 60 giây", d:"Bên nào nặng hơn? Trả lời thật nhanh!", rest:true},
+  {id:"l4", ic:"🏛️", nm:"Trạm 4: Bảo tàng", t:"So sánh hai khu phố", d:"Đọc bảng số liệu, chọn câu đúng"},
+  {id:"l5", ic:"🚉", nm:"Trạm 5: Nhà ga", t:"Tìm lỗi sai và xếp câu", d:"Bắt lỗi more bigger, then, gooder…"},
+  {id:"test", ic:"🏁", nm:"Bến cuối", t:"Kiểm tra 15 phút", d:"20 câu tổng hợp, điểm gửi về cho cô", test:true}
+];
+const EMAIL = "khuonganh2111@gmail.com";
+const KEY = "coanh-g6u4-gr";
+
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(KEY + k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(KEY + k, JSON.stringify(v)); }catch(e){} }
+};
+function shuffle(a){ for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const rand = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+function fmt(x){ return (Math.round(x * 4) / 4).toFixed(2).replace(/\.?0+$/, "").replace(".", ","); }
+const norm = s => String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/\s+/g, " ").replace(/[.!?]$/, "").trim();
+const isShort = x => x.r !== "more";
+function ruleText(x){
+  switch(x.r){
+    case "er": return `“${x.a}” có 1 âm tiết → thêm -er: ${x.c}.`;
+    case "er2": return `“${x.a}” có 2 âm tiết nhưng thường dùng -er: ${x.c}.`;
+    case "r": return `“${x.a}” tận cùng bằng e → chỉ thêm -r: ${x.c}.`;
+    case "dbl": return `“${x.a}” tận cùng 1 nguyên âm + 1 phụ âm → gấp đôi phụ âm rồi thêm -er: ${x.c}.`;
+    case "ier": return `“${x.a}” tận cùng bằng y → đổi y thành -ier: ${x.c}.`;
+    case "irr": return `“${x.a}” là tính từ đặc biệt: ${x.a} → ${x.cs.join(" / ")}.`;
+    default: return `“${x.a}” là tính từ dài → more ${x.a}.`;
+  }
+}
+function wrongForms(x){
+  const a = x.a;
+  let c;
+  switch(x.r){
+    case "er": case "er2": c = ["more " + a, "more " + a + "er", a + a.slice(-1) + "er"]; break;
+    case "r": c = ["more " + a, a + "er", "more " + a + "r"]; break;
+    case "dbl": c = [a + "er", "more " + a, "more " + x.c]; break;
+    case "ier": c = [a + "er", "more " + x.c, a.slice(0, -1) + "er"]; break;
+    case "irr": c = a === "good" ? ["gooder", "more good", "more better"] : a === "bad" ? ["badder", "more bad", "worser"] : ["farer", "more far", "more farther"]; break;
+    default: c = [a + "er", "more " + a + "er"];
+  }
+  return shuffle(c.filter(w => !x.cs.includes(w))).slice(0, 2);
+}
+let soundOn = store.get("-snd", true);
+let prog = store.get("-prog", {});
+
+/* ================= SPEECH ================= */
+let voices = [], voice = null, rate = store.get("-rate", 0.9);
+function scoreVoice(v){
+  let s = 0; const n = v.name;
+  if(/en[-_]GB/i.test(v.lang)) s += 50;
+  if(/Sonia|Libby|Maisie|Ryan|Thomas|Abbi|Bella|Hollie|Oliver/i.test(n)) s += 40;
+  if(/Natural|Online/i.test(n)) s += 25;
+  if(/Google UK English/i.test(n)) s += 35;
+  if(/Daniel|Kate|Serena|Arthur|Martha|Stephanie/i.test(n)) s += 22;
+  if(/Enhanced|Premium/i.test(n)) s += 10;
+  return s;
+}
+function loadVoices(){
+  if(!("speechSynthesis" in window)) return;
+  voices = speechSynthesis.getVoices().filter(v => /^en/i.test(v.lang)).sort((a, b) => scoreVoice(b) - scoreVoice(a));
+  const saved = store.get("-voice", "");
+  voice = voices.find(v => v.name === saved) || voices[0] || null;
+  $("#voiceSel").innerHTML = voices.length ? voices.map(v => `<option value="${esc(v.name)}">${esc(v.name)} (${esc(v.lang)})</option>`).join("") : "<option>Không tìm thấy giọng tiếng Anh</option>";
+  if(voice) $("#voiceSel").value = voice.name;
+  $("#voiceNote").textContent = voice && /en[-_]GB/i.test(voice.lang)
+    ? "Đang dùng giọng Anh – Anh. Giọng hay nhất thường có trên Microsoft Edge."
+    : "Máy này chưa có giọng Anh – Anh. Em thử mở bằng Microsoft Edge hoặc Chrome.";
+}
+if("speechSynthesis" in window){ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+function speak(text){
+  if(!("speechSynthesis" in window) || !text) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  if(voice){ u.voice = voice; u.lang = voice.lang; } else u.lang = "en-GB";
+  u.rate = rate; speechSynthesis.speak(u);
+}
+
+/* ================= SOUND & FX ================= */
+let actx = null;
+function tone(freqs, dur, type){
+  if(!soundOn) return;
+  try{
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    freqs.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * dur * 0.8;
+      o.type = type || "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur + 0.02);
+    });
+  }catch(e){}
+}
+const sfxGood = () => tone([660, 880], 0.13), sfxBad = () => tone([240, 180], 0.18), sfxWin = () => tone([523, 659, 784, 1046], 0.15);
+const sfxHorn = () => tone([392, 392, 523], 0.22, "square");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function confetti(n = 120){
+  if(reduced) return;
+  const cv = $("#fx"), ctx = cv.getContext("2d"); cv.width = innerWidth; cv.height = innerHeight;
+  const cols = ["#FFC531", "#E0353F", "#2F66DB", "#1E8A51", "#ffffff"];
+  const ps = Array.from({length:n}, () => ({x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * .35, vx: (Math.random() - .5) * 12, vy: -Math.random() * 12 - 4, r: Math.random() * 7 + 4, c: pick(cols), a: Math.random() * 6}));
+  const t0 = performance.now();
+  (function f(t){ ctx.clearRect(0, 0, cv.width, cv.height);
+    ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += .35; p.a += .2; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); ctx.restore(); });
+    if(t - t0 < 1800) requestAnimationFrame(f); else ctx.clearRect(0, 0, cv.width, cv.height); })(t0);
+}
+function tilt(beam, panL, panR, dir){
+  const deg = dir * 12;
+  beam.style.transform = `rotate(${-deg}deg)`;
+  if(panL){ panL.style.transform = `rotate(${deg}deg)`; panL.style.transformOrigin = "70px 76px"; }
+  if(panR){ panR.style.transform = `rotate(${deg}deg)`; panR.style.transformOrigin = "330px 76px"; }
+}
+
+/* ================= HERO SCALE ================= */
+let heroIdx = 0, heroSentence = "";
+function heroNext(){
+  const s = SCALES[heroIdx++ % SCALES.length], x = A[s[4]];
+  $("#emL").textContent = s[0]; $("#emR").textContent = s[1];
+  tilt($("#beam"), $("#panL"), $("#panR"), 0);
+  setTimeout(() => tilt($("#beam"), $("#panL"), $("#panR"), 1), 120);
+  heroSentence = `${s[2]} is ${x.c} than ${s[3]}.`;
+  $("#scap").innerHTML = `${esc(s[2])} is <span class="c">${esc(x.c)} than</span> ${esc(s[3])}.`;
+}
+$("#scNext").addEventListener("click", () => { heroNext(); speak(heroSentence); });
+$("#scSay").addEventListener("click", () => speak(heroSentence));
+
+/* ================= GENERATORS ================= */
+function genSort(){
+  const x = pick(ADJ.filter(a => a.r !== "irr" && a.r !== "er2"));
+  return {type:"mc", key:"s" + x.a, label:"Tính từ này thêm -er hay dùng more?",
+    head:`<div class="adj">${esc(x.a)}</div><div class="vi">${esc(x.vi)}</div>`,
+    opts:[{v:"er", h:`<span class="big">➕ -er</span><small>tính từ ngắn</small>`}, {v:"more", h:`<span class="big">more …</span><small>tính từ dài</small>`}],
+    a: isShort(x) ? "er" : "more", why: ruleText(x), full: x.c, ctx: x.a, say: `${x.a}, ${x.c}`};
+}
+function genForm(typed){
+  const x = pick(ADJ);
+  if(typed) return {type:"type", key:"ft" + x.a, label:"Gõ dạng so sánh hơn của tính từ",
+    head:`<div class="adj">${esc(x.a)}</div><div class="vi">${esc(x.vi)}</div>`, pre:"", post:"", ans:x.cs, why:ruleText(x), full:x.c, ctx:x.a, say:`${x.a}, ${x.c}`};
+  return {type:"mc", key:"f" + x.a, label:"Chọn dạng so sánh hơn đúng",
+    head:`<div class="adj">${esc(x.a)}</div><div class="vi">${esc(x.vi)}</div>`,
+    opts: shuffle([x.c].concat(wrongForms(x))).map(v => ({v, h:esc(v)})), a:x.c, why:ruleText(x), full:x.c, ctx:x.a, say:`${x.a}, ${x.c}`};
+}
+function genSent(typed, item){
+  const [pre, adj, post] = item || pick(SENTS), x = A[adj];
+  const full = `${pre} ${x.c} ${post}`;
+  if(typed) return {type:"type", key:"st" + pre, label:"Gõ dạng so sánh hơn của tính từ trong ngoặc",
+    head:"", pre: pre + " ", post: ` <span class="hint">(${esc(adj)})</span> ` + esc(post), ans:x.cs.map(c => c), why:ruleText(x), full, say:full};
+  return {type:"mc", key:"sm" + pre, label:"Chọn từ đúng để hoàn thành câu",
+    head:`<div class="sent">${esc(pre)} <span class="blank">?</span> ${esc(post)}</div>`,
+    opts: shuffle([x.c].concat(wrongForms(x))).map(v => ({v, h:esc(v)})), a:x.c, why:ruleText(x), full, say:full};
+}
+function compOf(adj){ return A[adj].c; }
+function genData(){
+  const [p1, p2] = shuffle(PLACES.slice()).slice(0, 2);
+  const attrs = shuffle(ATTRS.slice()).slice(0, 3), focus = attrs[0];
+  const vals = attrs.map(at => { const [hi, lo] = at.gen(); return Math.random() < .5 ? [hi, lo] : [lo, hi]; });
+  // which place has "more" of focus attribute
+  const [v1, v2] = vals[0];
+  const p1More = v1 > v2;
+  const useLo = focus.lo && Math.random() < .5;
+  // for "year": smaller year = older → hi adj (old) belongs to the smaller value
+  let subjMore = p1More ? p1 : p2, subjLess = p1More ? p2 : p1;
+  if(focus.invert){ [subjMore, subjLess] = [subjLess, subjMore]; }
+  const adj = useLo ? focus.lo : focus.hi;
+  const S = useLo ? subjLess : subjMore, O = useLo ? subjMore : subjLess;
+  const comp = compOf(adj), tail = focus.from ? " from school" : "";
+  const right = `${S[0]} is ${comp}${tail} than ${O[0]}.`;
+  const swapped = `${O[0]} is ${comp}${tail} than ${S[0]}.`;
+  const x = A[adj];
+  const badForm = x.r === "more" ? `${S[0]} is ${adj}er${tail} than ${O[0]}.` : `${S[0]} is more ${comp}${tail} than ${O[0]}.`;
+  const card = (p, idx) => `<div class="place"><h3>${p[1]} ${esc(p[0])}</h3>${attrs.map((at, k) => `<div class="stat${k === 0 ? " hl" : ""}"><span>${esc(at.label)}</span><span>${esc(at.fmt(vals[k][idx]))}</span></div>`).join("")}</div>`;
+  return {type:"mc", col:true, key:"d" + focus.k + adj + S[0], label:"Đọc bảng, chọn câu đúng cả về nghĩa lẫn ngữ pháp",
+    head:`<div class="places">${card(p1, 0)}${card(p2, 1)}</div>`,
+    opts: shuffle([right, swapped, badForm]).map(v => ({v, h:esc(v)})), a:right,
+    why:`Nhìn dòng “${focus.label}”: ${S[0]} – ${focus.fmt(S === p1 ? v1 : v2)}, ${O[0]} – ${focus.fmt(S === p1 ? v2 : v1)} → ${right} ${ruleText(x)}`, full:right, say:right};
+}
+function genError(item){
+  const e = item || pick(ERRORS);
+  const full = e.full || e.t.map((w, k) => k === e.e ? e.fix : w).join(" ");
+  return {type:"err", key:"e" + e.t.join(""), label:"Chạm vào từ bị sai trong câu", e, full, why:`Sửa: “${e.t[e.e]}” → ${e.fix}. ${e.why}`, say:full};
+}
+function genOrder(item){
+  const ch = item || pick(ORDERS);
+  return {type:"order", key:"o" + ch.join(""), label:"Chạm các cụm từ theo đúng thứ tự", chunks:ch, full:ch.join(" "), say:ch.join(" ")};
+}
+function uniq(gen, n){
+  const out = [], seen = new Set(); let guard = 0;
+  while(out.length < n && guard++ < 600){ const x = gen(out.length); if(seen.has(x.key)) continue; seen.add(x.key); out.push(x); }
+  return out;
+}
+function buildLevel(id){
+  if(id === "l1") return uniq(genSort, 10);
+  if(id === "l2") return uniq(() => genForm(false), 6).concat(uniq(() => genForm(true), 4));
+  if(id === "l3") return uniq(() => genSent(false), 5).concat(uniq(() => genSent(true), 5));
+  if(id === "l4") return uniq(genData, 8);
+  if(id === "l5") return shuffle(ERRORS.slice()).slice(0, 6).map(e => genError(e)).concat(shuffle(ORDERS.slice()).slice(0, 4).map(o => genOrder(o)));
+  if(id === "test"){
+    const out = uniq(genSort, 2).concat(uniq(() => genForm(false), 2), uniq(() => genForm(true), 2),
+      uniq(() => genSent(false), 3), uniq(() => genSent(true), 3), uniq(genData, 3),
+      shuffle(ERRORS.slice()).slice(0, 3).map(e => genError(e)), shuffle(ORDERS.slice()).slice(0, 2).map(o => genOrder(o)));
+    return out;
+  }
+}
+
+/* ================= NAV / HOME ================= */
+function show(id){
+  ["home", "theory", "quiz", "qfire", "end"].forEach(s => $("#" + s).classList.toggle("hidden", s !== id));
+  window.scrollTo({top:0});
+  if(id === "home") renderHome();
+}
+const starsOf = x => x >= 9 ? 3 : x >= 7 ? 2 : x >= 5 ? 1 : 0;
+function renderHome(){
+  $("#route").innerHTML = LEVELS.map(L => {
+    const p = prog[L.id];
+    let res = `<span class="res empty">Chưa đến</span>`;
+    if(L.id === "qf" && p !== undefined) res = `<span class="res">${p} câu</span>`;
+    else if(L.id === "test" && p !== undefined) res = `<span class="res">${fmt(p)}/10</span>`;
+    else if(p !== undefined) res = `<span class="res">${"★".repeat(starsOf(p))}<span style="opacity:.2">${"★".repeat(3 - starsOf(p))}</span></span>`;
+    return `<button class="stop${p !== undefined ? " done" : ""}${L.rest ? " rest" : ""}" data-lv="${L.id}"><span class="dot">${L.ic}</span><span class="card2"><span class="nm">${esc(L.nm)}</span><b>${esc(L.t)}</b><small>${esc(L.d)}</small></span>${res}</button>`;
+  }).join("");
+}
+$("#route").addEventListener("click", e => {
+  const b = e.target.closest("[data-lv]"); if(!b) return;
+  saveName();
+  const id = b.dataset.lv;
+  if(id === "qf") return openQF();
+  if(id === "test" && !needName()) return;
+  startLevel(id);
+});
+function needName(){
+  if($("#nameIn").value.trim()){ $("#nameWarn").classList.add("hidden"); return true; }
+  show("home"); $("#nameWarn").classList.remove("hidden"); $("#nameIn").focus(); $("#nameIn").scrollIntoView({block:"center", behavior:"smooth"}); return false;
+}
+function saveName(){ store.set("-name", $("#nameIn").value.trim()); store.set("-class", $("#classIn").value.trim()); }
+$("#nameIn").value = store.get("-name", ""); $("#classIn").value = store.get("-class", "");
+$("#theoryBtn").addEventListener("click", () => show("theory"));
+$("#theoryDone").addEventListener("click", () => show("home"));
+
+/* ================= QUIZ ENGINE ================= */
+let q = null;
+function startLevel(id){
+  const L = LEVELS.find(x => x.id === id);
+  q = {id, L, list: buildLevel(id), i:0, correct:0, combo:0, bestCombo:0, wrong:[], start:Date.now()};
+  sfxHorn();
+  show("quiz"); renderQ();
+}
+function renderQ(){
+  const it = q.list[q.i], n = q.list.length;
+  q.answered = false;
+  $("#qtag").textContent = q.L.test ? "Bến cuối" : q.L.nm.split(":")[0];
+  $("#qbar").style.width = (q.i / n * 100) + "%";
+  paintCombo();
+  let html = `<p class="qlabel">Câu ${q.i + 1}/${n} – ${esc(it.label)}</p>` + (it.head || "");
+  if(it.type === "mc") html += `<div class="opts${it.col ? " col" : ""}">${it.opts.map((o, k) => `<button class="opt" data-k="${k}">${o.h}</button>`).join("")}</div>`;
+  else if(it.type === "type") html += `<div class="sent">${esc(it.pre)}<input class="typein" id="typein" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Dạng so sánh hơn">${it.post}</div><div class="nextrow"><button class="btn" id="checkBtn">Kiểm tra</button></div>`;
+  else if(it.type === "err") html += `<div class="tokens">${it.e.t.map((w, k) => `<button class="tok" data-k="${k}">${esc(w)}</button>`).join(" ")}</div>`;
+  else if(it.type === "order"){
+    const sh = shuffle(it.chunks.map((c, i) => ({c, i}))); if(sh.every((o, k) => o.i === k)) sh.reverse();
+    html += `<div class="build" id="build"></div><div class="pool">${sh.map(o => `<button class="chunk" data-i="${o.i}">${esc(o.c)}</button>`).join("")}</div><div class="nextrow"><button class="smallbtn" id="undoBtn">↺ Xếp lại</button></div>`;
+  }
+  $("#card").innerHTML = html + `<div class="feedback" id="fb" aria-live="polite"></div><div id="why"></div><div class="nextrow hidden" id="nextRow"><button class="btn" id="nextBtn">${q.i + 1 < n ? "Câu tiếp" : "Xem kết quả"}</button></div>`;
+  $("#nextBtn").addEventListener("click", nextQ);
+  bindQ(it);
+}
+function bindQ(it){
+  if(it.type === "mc"){
+    document.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+      if(q.answered) return;
+      const ch = it.opts[+b.dataset.k].v, ok = ch === it.a;
+      document.querySelectorAll(".opt").forEach(x => { x.disabled = true; if(it.opts[+x.dataset.k].v === it.a) x.classList.add("good"); });
+      if(!ok) b.classList.add("bad");
+      const bl = document.querySelector(".blank"); if(bl){ bl.textContent = it.a; bl.style.color = "var(--good)"; }
+      done(ok, it, it.opts[+b.dataset.k].h.replace(/<[^>]+>/g, " ").trim());
+    }));
+  }
+  if(it.type === "type"){
+    const inp = $("#typein");
+    setTimeout(() => inp.focus({preventScroll:true}), 60);
+    const check = () => {
+      if(q.answered) return;
+      if(!inp.value.trim()){ inp.focus(); return; }
+      const ok = it.ans.some(a => norm(a) === norm(inp.value));
+      inp.disabled = true; inp.classList.add(ok ? "good" : "bad"); $("#checkBtn").classList.add("hidden");
+      done(ok, it, inp.value.trim());
+    };
+    $("#checkBtn").addEventListener("click", check);
+    inp.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); check(); } });
+  }
+  if(it.type === "err"){
+    document.querySelectorAll(".tok").forEach(b => b.addEventListener("click", () => {
+      if(q.answered) return;
+      const k = +b.dataset.k, ok = k === it.e.e;
+      document.querySelectorAll(".tok").forEach(x => x.disabled = true);
+      document.querySelector(`.tok[data-k="${it.e.e}"]`).classList.add("err");
+      if(!ok) b.classList.add("bad");
+      done(ok, it, it.e.t.map((w, j) => j === k ? `[${w}]` : w).join(" "));
+    }));
+  }
+  if(it.type === "order"){
+    const build = $("#build"), placed = [];
+    document.querySelectorAll(".pool .chunk").forEach(b => b.addEventListener("click", () => {
+      if(q.answered) return;
+      placed.push(b); b.classList.add("used");
+      const c = document.createElement("button"); c.className = "chunk"; c.textContent = b.textContent;
+      c.addEventListener("click", () => { if(q.answered) return; placed.splice(placed.indexOf(b), 1); b.classList.remove("used"); c.remove(); });
+      build.appendChild(c);
+      if(placed.length === it.chunks.length){
+        const got = placed.map(p => p.textContent).join(" "), ok = got === it.chunks.join(" ");
+        build.classList.add(ok ? "good" : "bad"); $("#undoBtn").classList.add("hidden");
+        done(ok, it, got);
+      }
+    }));
+    $("#undoBtn").addEventListener("click", () => { if(q.answered) return; placed.splice(0).forEach(p => p.classList.remove("used")); build.innerHTML = ""; });
+  }
+}
+const CHEERS = ["Chính xác!", "Giỏi quá!", "Đúng rồi!", "Xe chạy tiếp nào!", "Xuất sắc!"];
+function done(ok, it, yours){
+  q.answered = true;
+  if(ok){ q.correct++; q.combo++; q.bestCombo = Math.max(q.bestCombo, q.combo); sfxGood(); if(q.combo % 5 === 0) confetti(70); }
+  else { q.combo = 0; sfxBad(); q.wrong.push({it, yours}); }
+  paintCombo();
+  const fb = $("#fb");
+  fb.textContent = ok ? pick(CHEERS) + (q.combo >= 3 ? ` 🔥 ${q.combo} câu liền!` : "") : "Chưa đúng rồi.";
+  fb.className = "feedback " + (ok ? "good" : "bad");
+  $("#why").innerHTML = `<div class="why">${!ok || !it.why ? `<div>${ok ? "" : "Đáp án: "}<span class="ans">${esc(it.full)}</span></div>` : ""}${it.why ? `<div>${esc(it.why)}</div>` : ""}</div>`;
+  $("#nextRow").insertAdjacentHTML("afterbegin", `<button class="smallbtn" id="sayBtn">🔊 Nghe</button>`);
+  $("#sayBtn").addEventListener("click", () => speak(it.say));
+  $("#nextRow").classList.remove("hidden");
+  setTimeout(() => speak(it.say), 200);
+  $("#nextBtn").focus({preventScroll:true});
+}
+function paintCombo(){ $("#combo").textContent = q && q.combo >= 2 ? `🔥 ×${q.combo}` : ""; }
+function nextQ(){ if(!q || !q.answered) return; q.i++; if(q.i >= q.list.length) finish(); else renderQ(); }
+
+function finish(){
+  const n = q.list.length, s10 = q.correct / n * 10, secs = Math.round((Date.now() - q.start) / 1000), st = starsOf(s10);
+  if(prog[q.id] === undefined || s10 > prog[q.id]) prog[q.id] = s10;
+  store.set("-prog", prog);
+  sfxWin(); if(st >= 2) confetti();
+  const msg = st === 3 ? "Xuất sắc! Xe buýt chạy êm qua trạm này." : st === 2 ? "Tốt lắm! Chỉ còn sai một chút xíu." : st === 1 ? "Khá rồi! Em xem lại lí thuyết rồi đi lại trạm này nhé." : "Cố lên! Em xem lại lí thuyết rồi làm lại nhé.";
+  const idx = LEVELS.findIndex(L => L.id === q.id), nextL = LEVELS[idx + 1];
+  const list = q.wrong.length ? `<h2 style="margin:20px 0 0;text-align:left;font-size:22px">Câu cần xem lại</h2><ul class="mlist">${q.wrong.map(w => `<li>${w.it.ctx ? `<b>${esc(w.it.ctx)}</b>: ` : ""}<span class="y">${esc(w.yours)}</span><br><span class="r">${esc(w.it.full)}</span></li>`).join("")}</ul>` : "";
+  $("#endCard").innerHTML = `<div class="stars">${"★".repeat(st)}<span style="opacity:.25">${"★".repeat(3 - st)}</span></div>
+    <div class="bigscore">${fmt(s10)}<small> /10</small></div><p class="endmsg">${msg}</p>
+    <div class="endstats">${esc(q.L.nm)} – đúng ${q.correct}/${n} câu – ${Math.floor(secs / 60)} phút ${secs % 60} giây</div>
+    <div class="sendst" id="sendSt"></div>${list}
+    <div class="nextrow" style="margin-top:20px">${nextL ? `<button class="btn" id="nextLv">Đi tiếp: ${esc(nextL.nm)}</button>` : ""}<button class="btn ghost" id="again">Làm lại</button><button class="btn ghost" id="home2">Xem tuyến xe</button></div>`;
+  const id = q.id;
+  if($("#nextLv")) $("#nextLv").addEventListener("click", () => {
+    if(nextL.id === "qf") return openQF();
+    if(nextL.test && !needName()) return;
+    startLevel(nextL.id);
+  });
+  $("#again").addEventListener("click", () => startLevel(id));
+  $("#home2").addEventListener("click", () => show("home"));
+  show("end");
+  if(id === "test") sendResult(s10, q.correct, n, secs, q.wrong);
+}
+async function sendResult(s10, c, n, secs, wrong){
+  const name = $("#nameIn").value.trim(), cls = $("#classIn").value.trim(), el = $("#sendSt");
+  el.textContent = "Đang gửi điểm cho cô…";
+  try{
+    const r = await fetch("https://formsubmit.co/ajax/" + EMAIL, {method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"}, body: JSON.stringify({
+      "Họ tên": name, "Lớp": cls || "(không ghi)", "Bài": "Lớp 6 – Unit 4 Grammar: So sánh hơn (Comparative adjectives)",
+      "Điểm": fmt(s10) + "/10", "Số câu đúng": `${c}/${n}`, "Thời gian": `${Math.floor(secs / 60)} phút ${secs % 60} giây`,
+      "Câu làm sai": wrong.map(w => `${w.yours} → ${w.it.full}`).join("\n") || "Không có",
+      _subject: `[Lớp 6 Unit 4 – So sánh hơn] ${name}${cls ? " (" + cls + ")" : ""} – ${fmt(s10)} điểm`, _template: "table", _captcha: "false"})});
+    if(!r.ok) throw new Error(r.status);
+    el.textContent = "✓ Đã gửi điểm cho cô.";
+  }catch(e){ el.textContent = "Chưa gửi được điểm. Em chụp màn hình này gửi cô nhé."; }
+}
+
+/* ================= QUICK FIRE: SCALE ================= */
+let F = null;
+function openQF(){
+  show("qfire");
+  $("#qfQ").innerHTML = ""; $("#qfOpts").innerHTML = ""; $("#qfTimer").style.width = "100%";
+  $("#qfScore").textContent = "0 câu đúng"; $("#qfTime").textContent = "60 giây";
+  tilt($("#qbeam"), null, null, 0);
+  $("#qfBox").innerHTML = `<h2 style="margin:0">⚖️ Cân so sánh 60 giây</h2>
+    <p>Mỗi lần cân là một câu so sánh. Chọn thật nhanh dạng đúng, ví dụ <b>heavier</b> hay <b>more heavy</b>. Chọn sai bị trừ 2 giây.</p>
+    ${prog.qf !== undefined ? `<p><b>Kỉ lục của em: ${prog.qf} câu</b></p>` : ""}<button class="btn bus" id="qfGo">Bắt đầu</button>`;
+  $("#qfStart").classList.remove("hidden");
+  $("#qfGo").addEventListener("click", startQF);
+}
+function startQF(){
+  $("#qfStart").classList.add("hidden");
+  F = {score:0, wrong:0, end: performance.now() + 60000, run:true, lock:false, last:-1};
+  nextQF(); requestAnimationFrame(qfTick);
+}
+function nextQF(){
+  let i; do{ i = Math.floor(Math.random() * SCALES.length); } while(i === F.last); F.last = i;
+  const s = SCALES[i], x = A[s[4]];
+  F.cur = {s, x, a:x.c};
+  $("#qemL").textContent = s[0]; $("#qemR").textContent = s[1];
+  tilt($("#qbeam"), null, null, 0); setTimeout(() => tilt($("#qbeam"), null, null, 1), 60);
+  $("#qfQ").innerHTML = `${esc(s[2])} is <span class="bl">___</span> than ${esc(s[3])}. <span style="color:var(--muted);font-weight:600">(${esc(x.a)})</span>`;
+  const wrong = wrongForms(x)[0];
+  $("#qfOpts").innerHTML = shuffle([x.c, wrong]).map(o => `<button class="ch" data-o="${esc(o)}">${esc(o)}</button>`).join("");
+  F.lock = false;
+  document.querySelectorAll("#qfOpts .ch").forEach(b => b.addEventListener("click", () => answerQF(b)));
+}
+function answerQF(b){
+  if(!F || !F.run || F.lock) return;
+  F.lock = true;
+  const ok = b.dataset.o === F.cur.a;
+  if(ok){ F.score++; sfxGood(); b.classList.add("good"); }
+  else { F.wrong++; F.end -= 2000; sfxBad(); b.classList.add("bad"); document.querySelectorAll("#qfOpts .ch").forEach(x => { if(x.dataset.o === F.cur.a) x.classList.add("good"); }); }
+  $("#qfScore").textContent = F.score + " câu đúng";
+  $("#qfQ").querySelector(".bl").textContent = F.cur.a;
+  setTimeout(() => { if(F && F.run) nextQF(); }, ok ? 300 : 1000);
+}
+function qfTick(t){
+  if(!F || !F.run) return;
+  const left = Math.max(0, (F.end - t) / 1000);
+  $("#qfTimer").style.width = (left / 60 * 100) + "%";
+  $("#qfTime").textContent = Math.ceil(left) + " giây";
+  if(left <= 0){ endQF(); return; }
+  requestAnimationFrame(qfTick);
+}
+function endQF(){
+  F.run = false; sfxHorn();
+  const nb = prog.qf === undefined || F.score > prog.qf;
+  if(nb){ prog.qf = F.score; store.set("-prog", prog); if(F.score > 0) confetti(); }
+  $("#qfBox").innerHTML = `<h2 style="margin:0">🚌 Hết giờ nghỉ!</h2>
+    <p style="font-size:44px;font-weight:800;margin:4px 0;color:var(--route)">${F.score} câu đúng</p>
+    <p>${nb && F.score > 0 ? "🏅 Kỉ lục mới!" : "Kỉ lục: " + prog.qf + " câu"}${F.wrong ? ` – sai ${F.wrong} câu` : ""}</p>
+    <div class="nextrow"><button class="btn bus" id="qfGo">Chơi lại</button><button class="btn ghost" id="qfNext">Đi tiếp: Trạm 4</button></div>`;
+  $("#qfStart").classList.remove("hidden");
+  $("#qfGo").addEventListener("click", startQF);
+  $("#qfNext").addEventListener("click", () => startLevel("l4"));
+}
+
+/* ================= CONTROLS ================= */
+$("#homeBtn").addEventListener("click", () => {
+  const playing = (!$("#quiz").classList.contains("hidden") && q && q.i > 0) || (F && F.run && !$("#qfire").classList.contains("hidden"));
+  if(playing && !confirm("Dừng bài đang làm và về tuyến xe?")) return;
+  if(F) F.run = false;
+  show("home");
+});
+function paintSnd(){ $("#sndBtn").textContent = soundOn ? "🔊" : "🔇"; }
+$("#sndBtn").addEventListener("click", () => { soundOn = !soundOn; store.set("-snd", soundOn); paintSnd(); });
+const dlg = $("#setDlg");
+$("#setBtn").addEventListener("click", () => { loadVoices(); $("#rateIn").value = rate; dlg.showModal ? dlg.showModal() : dlg.setAttribute("open", ""); });
+$("#closeDlg").addEventListener("click", () => dlg.close ? dlg.close() : dlg.removeAttribute("open"));
+$("#voiceSel").addEventListener("change", e => { voice = voices.find(v => v.name === e.target.value) || voice; store.set("-voice", voice ? voice.name : ""); loadVoices(); speak("My neighbourhood is quieter than the city centre."); });
+$("#rateIn").addEventListener("input", e => { rate = +e.target.value; store.set("-rate", rate); });
+$("#testVoice").addEventListener("click", () => speak("The city is more crowded than the countryside."));
+document.addEventListener("keydown", e => {
+  if(dlg.open) return;
+  const tag = document.activeElement && document.activeElement.tagName;
+  if(tag === "INPUT") return;
+  if(!$("#qfire").classList.contains("hidden") && F && F.run){
+    const bs = document.querySelectorAll("#qfOpts .ch");
+    if(e.key === "ArrowLeft" || e.key === "1"){ e.preventDefault(); bs[0] && answerQF(bs[0]); }
+    if(e.key === "ArrowRight" || e.key === "2"){ e.preventDefault(); bs[1] && answerQF(bs[1]); }
+    return;
+  }
+  if(!$("#quiz").classList.contains("hidden") && q){
+    if(!q.answered && /^[1-4]$/.test(e.key)){ const b = document.querySelectorAll(".opt")[+e.key - 1]; if(b) b.click(); }
+    else if(q.answered && e.key === "Enter" && document.activeElement !== $("#nextBtn")) nextQ();
+  }
+});
+paintSnd(); heroNext(); renderHome();
+</script>
+</body>
+</html>
